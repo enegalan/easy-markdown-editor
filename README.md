@@ -126,6 +126,7 @@ easyMDE.value('New input for **EasyMDE**');
   - **bold**: Can be set to `**` or `__`. Defaults to `**`.
   - **code**: Can be set to  ```` ``` ```` or `~~~`.  Defaults to ```` ``` ````.
   - **italic**: Can be set to `*` or `_`. Defaults to `*`.
+  - **strikethrough**: Can be set to `~` or `~~`. Defaults to `~`.
 - **unorderedListStyle**: can be `*`, `-` or `+`. Defaults to `*`.
 - **scrollbarStyle**: Chooses a scrollbar implementation. The default is "native", showing native scrollbars. The core library also provides the "null" style, which completely hides the scrollbars. Addons can implement additional scrollbar models.
 - **element**: The DOM element for the `textarea` element to use. Defaults to the first `textarea` element on the page.
@@ -344,6 +345,7 @@ image | drawImage | Insert Image<br>fa fa-picture-o
 upload-image | drawUploadedImage | Raise browse-file window<br>fa fa-image
 table | drawTable | Insert Table<br>fa fa-table
 horizontal-rule | drawHorizontalRule | Insert Horizontal Line<br>fa fa-minus
+html | toggleHtml | Source Edit<br>fa fa-html5
 preview | togglePreview | Toggle Preview<br>fa fa-eye no-disable
 side-by-side | toggleSideBySide | Toggle Side by Side<br>fa fa-columns no-disable no-mobile
 fullscreen | toggleFullScreen | Toggle Fullscreen<br>fa fa-arrows-alt no-disable no-mobile

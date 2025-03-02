@@ -236,3 +236,10 @@ new EasyMDE({
         return null;
     }
 });
+
+new EasyMDE({
+    toolbar: [
+        'html'
+    ],
+    initialHtmlParse: true,
+});

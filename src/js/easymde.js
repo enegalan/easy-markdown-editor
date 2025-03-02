@@ -13,6 +13,7 @@ require('codemirror/mode/gfm/gfm.js');
 require('codemirror/mode/xml/xml.js');
 var CodeMirrorSpellChecker = require('codemirror-spell-checker');
 var marked = require('marked').marked;
+var TurndownService = require('turndown');
 
 
 // Some variables
@@ -46,6 +47,7 @@ var bindings = {
     'redo': redo,
     'toggleSideBySide': toggleSideBySide,
     'toggleFullScreen': toggleFullScreen,
+    'html': toggleHtml,
 };
 
 var shortcuts = {
@@ -941,6 +943,165 @@ function redo(editor) {
     cm.focus();
 }
 
+/**
+ * Toggle HTML action.
+ * @param {EasyMDE} editor
+ */
+function toggleHtml(editor) {
+    var cm = editor.codemirror;
+    var wrapper = cm.getWrapperElement();
+    var preview = wrapper.nextSibling;
+    var htmlButton = editor.toolbarElements && editor.toolbarElements.html;
+    var value;
+    if (!htmlButton) return false;
+    if (!preview.classList.contains('editor-preview-active-side')) toggleSideBySide(editor);
+    var htmlContent = preview.getHTML();
+    if (!('initial_mode' in cm.options)) cm.options.initial_mode = cm.options.mode;
+    if (htmlButton.classList.contains('active')) {
+        value = parseHTML(htmlContent, editor);
+        cm.setOption('mode', cm.options.initial_mode);
+    } else {
+        value = htmlContent;
+        cm.setOption('mode', 'htmlmixed');
+    }
+    cm.setValue(value);
+    toggleToolbarFormatOrStylingButtons(editor);
+    htmlButton.classList.toggle('active');
+    return htmlContent;
+}
+
+/**
+ * Activate/Disable toolbar buttons related to text formatting or styling.
+ * @param {EasyMDE} editor
+ */
+function toggleToolbarFormatOrStylingButtons(editor) {
+    if (!editor.toolbarElements) return false;
+    for (var elementName in editor.toolbarElements) {
+        if (elementName == '|') continue;
+        if (elementName == 'html') continue;
+        if (elementName == 'fullscreen') continue;
+        if (elementName == 'guide') continue;
+        if (elementName == 'undo') continue;
+        if (elementName == 'redo') continue;
+        let toolbarElement = editor.toolbarElements[elementName];
+        toolbarElement.disabled = !toolbarElement.disabled;
+    }
+}
+
+/**
+ * Get HTML content action.
+ * @param {EasyMDE} editor
+ */
+function getHtml(editor) {
+    var cm = editor.codemirror;
+    var wrapper = cm.getWrapperElement();
+    var preview = wrapper.nextSibling;
+    if (!editor.isSideBySideActive()) toggleSideBySide(editor);
+    return preview.getHTML();
+}
+
+/**
+ * Check if text contains HTML tags
+ * @param {String} text
+ */
+function containsHTML(text) {
+    var doc = new DOMParser().parseFromString(text, 'text/html');
+    return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
+}
+
+/**
+ * Converts HTML content to markdown text.
+ * @param {String} htmlContent
+ * @param {EasyMDE} editor
+ */
+function parseHTML(htmlContent, editor) {
+    // CONVERTION LIMITATIONS: 
+        //  1.- Markdown commentaries are lost
+        //  2.- There could be scaped characters in some cases (i.e. asterisk)
+        //  3.- Table rows will change to '---'
+        //  4.- Strikethrough will change to '~'
+    // TODO: Add support for the following features in order to parse HTML to markdown without too many content differences (not visual differences):
+        // * insertTexts:
+            // * image
+            // * link
+            // * table
+    const formattingOptionsReferMap = {
+        'bold': 'strongDelimiter',
+        'code': 'fence',
+        'italic': 'emDelimiter',
+        'unorderedListStyle': 'bulletListMarker',
+        'allowAtxHeaderWithoutSpace': 'headingStyle', // true/false <-> 'atx'/'setext'
+        'horizontalRule': 'hr',
+    };
+    var options = {
+        'headingStyle': 'atx',
+        'codeBlockStyle': 'fenced',
+    };
+    // Adapt EasyMDE options for TurndownService
+    var horizontalRule;
+    Object.keys(editor.options).forEach(key => {
+        if (key == 'blockStyles' || key == 'parsingConfig' || key == 'insertTexts') {
+            Object.keys(editor.options[key]).forEach(subkey => {
+                if (subkey in formattingOptionsReferMap) {
+                    let newValue;
+                    if (subkey == 'allowAtxHeaderWithoutSpace') {
+                        newValue = editor.options[key][subkey] ? 'atx' : 'setext';
+                    } else if (subkey == 'horizontalRule') {
+                        horizontalRule = editor.options[key][subkey][1];
+                    } else {
+                        newValue = editor.options[key][subkey];
+                    }
+                    if (newValue != null) options[formattingOptionsReferMap[subkey]] = newValue; 
+                }
+            });
+        }
+        if (key in formattingOptionsReferMap && editor.options[key] != null) {
+            options[formattingOptionsReferMap[key]] = editor.options[key];
+        }
+    });
+    if (editor.turndownOptions && typeof editor.turndownOptions === 'object') {
+        options = Object.assign(options, editor.turndownOptions);
+    }
+    const turndownService = new TurndownService(options);
+    turndownService.addRule('no-newline-heading', {
+        filter: function(node) {
+            // Check if node is a header (h1, h2, h3, h4, h5, h6)
+            return /^h[1-6]$/i.test(node.nodeName);
+        },
+        replacement: function(content, node) {
+            const level = parseInt(node.nodeName.charAt(1), 10); // h1 -> 1, h2 -> 2, etc.
+            return '\n' + `${'#'.repeat(level)} ${content}`;
+        },
+    });
+    turndownService.addRule('no-space-after-br', {
+        filter: 'br',
+        replacement: function() {
+            return '\n';
+        },
+    });
+    const newLineChar = '&#10;';
+    turndownService.addRule('horizontalRule', {
+        filter: 'hr',
+        replacement: function() {
+            return horizontalRule.replaceAll(/\n/g, newLineChar + '\n');
+        },
+    });
+    turndownService.addRule('no-space-list', {
+        filter: 'li',
+        replacement: function(content, node) {
+            if (node.parentNode.tagName === 'UL') {
+                return editor.options.unorderedListStyle + ' ' + content.trim() + '\n';
+            } else if (node.parentNode.tagName === 'OL') {
+                const index = Array.prototype.indexOf.call(node.parentNode.children, node) + 1;
+                return index + '. ' + content.trim() + '\n';
+            }
+        },
+    });
+    var turndownPluginGfm = require('turndown-plugin-gfm');
+    var gfm = turndownPluginGfm.gfm;
+    turndownService.use(gfm);
+    return turndownService.turndown(htmlContent).replaceAll(newLineChar, '');
+}
 
 /**
  * Toggle side by side preview
@@ -1315,7 +1476,6 @@ function _toggleBlock(editor, type, start_chars, end_chars) {
 
     var startPoint = cm.getCursor('start');
     var endPoint = cm.getCursor('end');
-
     if (stat[type]) {
         text = cm.getLine(startPoint.line);
         start = text.slice(0, startPoint.ch);
@@ -1484,6 +1644,7 @@ var iconClassMap = {
     'guide': 'fa fa-question-circle',
     'undo': 'fa fa-undo',
     'redo': 'fa fa-repeat fa-redo',
+    'html': 'fa fa-html5',
 };
 
 var toolbarBuiltInButtons = {
@@ -1617,6 +1778,13 @@ var toolbarBuiltInButtons = {
     },
     'separator-3': {
         name: 'separator-3',
+    },
+    'html': {
+        name: 'html',
+        action: toggleHtml,
+        className: iconClassMap['html'],
+        noDisable: true,
+        title: 'Source Edit',
     },
     'preview': {
         name: 'preview',
@@ -2303,6 +2471,11 @@ EasyMDE.prototype.render = function (el) {
     setTimeout(function () {
         temp_cm.refresh();
     }.bind(temp_cm), 0);
+
+    // Initial convertion from HTML to markdown
+    if ((!('initialHtmlParse' in options) && this.toolbarElements.html || options.initialHtmlParse === true) && containsHTML(this.codemirror.getValue())) {
+        this.codemirror.setValue(parseHTML(this.codemirror.getValue(), this));
+    }
 };
 
 EasyMDE.prototype.cleanup = function () {
@@ -2713,7 +2886,7 @@ EasyMDE.prototype.createToolbar = function (items) {
                 var el = toolbarData[key];
                 if (stat[key]) {
                     el.classList.add('active');
-                } else if (key != 'fullscreen' && key != 'side-by-side') {
+                } else if (key != 'fullscreen' && key != 'side-by-side' && key != 'html') {
                     el.classList.remove('active');
                 }
             })(key);
@@ -2908,6 +3081,8 @@ EasyMDE.redo = redo;
 EasyMDE.togglePreview = togglePreview;
 EasyMDE.toggleSideBySide = toggleSideBySide;
 EasyMDE.toggleFullScreen = toggleFullScreen;
+EasyMDE.toggleHtml = toggleHtml;
+EasyMDE.getHtml = getHtml;
 
 /**
  * Bind instance methods for exports.
@@ -2989,6 +3164,12 @@ EasyMDE.prototype.toggleSideBySide = function () {
 };
 EasyMDE.prototype.toggleFullScreen = function () {
     toggleFullScreen(this);
+};
+EasyMDE.prototype.toggleHtml = function () {
+    return toggleHtml(this);
+};
+EasyMDE.prototype.getHtml = function () {
+    return getHtml(this);
 };
 
 EasyMDE.prototype.isPreviewActive = function () {

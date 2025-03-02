@@ -52,7 +52,8 @@ type ToolbarButton =
     | 'preview'
     | 'side-by-side'
     | 'fullscreen'
-    | 'guide';
+    | 'guide'
+    | 'html';
 
 declare namespace EasyMDE {
 
@@ -237,6 +238,8 @@ declare namespace EasyMDE {
         overlayMode?: OverlayModeOptions;
 
         direction?: 'ltr' | 'rtl';
+
+        initialHtmlParse?: boolean;
     }
 }
 
@@ -288,6 +291,8 @@ declare class EasyMDE {
     static toggleFullScreen: (editor: EasyMDE) => void;
     static undo: (editor: EasyMDE) => void;
     static redo: (editor: EasyMDE) => void;
+    static html: (editor: EasyMDE) => void;
+    static getHtml: (editor: EasyMDE) => void;
 }
 
 export as namespace EasyMDE;
