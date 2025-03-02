@@ -147,9 +147,13 @@
 }
 
 .editor-toolbar button.active,
-.editor-toolbar button:hover {
+.editor-toolbar button:not([disabled]):hover {
     background: #fcfcfc;
     border-color: #95a5a6;
+}
+
+.editor-toolbar button[disabled] {
+    cursor: auto;
 }
 
 .editor-toolbar i.separator {
