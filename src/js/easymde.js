@@ -1059,6 +1059,7 @@ function parseHTML(htmlContent, editor) {
             options[formattingOptionsReferMap[key]] = editor.options[key];
         }
     });
+    // TODO: DOC
     if (editor.turndownOptions && typeof editor.turndownOptions === 'object') {
         options = Object.assign(options, editor.turndownOptions);
     }
