@@ -1477,6 +1477,7 @@ function _toggleBlock(editor, type, start_chars, end_chars) {
 
     var startPoint = cm.getCursor('start');
     var endPoint = cm.getCursor('end');
+
     if (stat[type]) {
         text = cm.getLine(startPoint.line);
         start = text.slice(0, startPoint.ch);
