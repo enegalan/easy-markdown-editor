@@ -1006,7 +1006,7 @@ function getHtml(editor) {
  */
 function containsHTML(text) {
     var doc = new DOMParser().parseFromString(text, 'text/html');
-    return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
+    return Array.from(doc.body.childNodes).some(node => node.nodeType === Node.ELEMENT_NODE);
 }
 
 /**
