@@ -954,7 +954,7 @@ function toggleHtml(editor) {
     var htmlButton = editor.toolbarElements && editor.toolbarElements.html;
     var value;
     if (!htmlButton) return false;
-    if (!preview.classList.contains('editor-preview-active-side')) toggleSideBySide(editor);
+    if (!editor.isSideBySideActive()) toggleSideBySide(editor);
     var htmlContent = preview.getHTML();
     if (!('initial_mode' in cm.options)) cm.options.initial_mode = cm.options.mode;
     if (htmlButton.classList.contains('active')) {
