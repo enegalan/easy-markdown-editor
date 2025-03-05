@@ -1091,7 +1091,7 @@ function parseHTML(htmlContent, editor) {
         filter: 'li',
         replacement: function(content, node) {
             if (node.parentNode.tagName === 'UL') {
-                return editor.options.unorderedListStyle + ' ' + content.trim() + '\n';
+                return (editor.options.unorderedListStyle ? editor.options.unorderedListStyle : '*') + ' ' + content.trim() + '\n';
             } else if (node.parentNode.tagName === 'OL') {
                 const index = Array.prototype.indexOf.call(node.parentNode.children, node) + 1;
                 return index + '. ' + content.trim() + '\n';
