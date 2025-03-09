@@ -1117,7 +1117,7 @@ function parseHTML(htmlContent, editor) {
     var turndownPluginGfm = require('turndown-plugin-gfm');
     var gfm = turndownPluginGfm.gfm;
     turndownService.use(gfm);
-    return turndownService.turndown(htmlContent).replaceAll(newLineChar, '');
+    return turndownService.turndown(htmlContent).replaceAll(newLineChar, '').replaceAll(/~(.*?)~/g, '~~$1~~');
 }
 
 /**
