@@ -1089,19 +1089,47 @@ function parseHTML(htmlContent, editor) {
     });
     turndownService.addRule('no-space-list', {
         filter: 'li',
-        replacement: function(content, node) {
-            if (node.parentNode.tagName === 'UL') {
-                return (editor.options.unorderedListStyle ? editor.options.unorderedListStyle : '*') + ' ' + content.trim() + '\n';
-            } else if (node.parentNode.tagName === 'OL') {
-                const index = Array.prototype.indexOf.call(node.parentNode.children, node) + 1;
-                return index + '. ' + content.trim() + '\n';
+        replacement: function (content, node) {
+            let indentLevel = 0;
+            let parent = node.parentNode;
+            while (parent && (parent.tagName === 'UL' || parent.tagName === 'OL')) {
+                indentLevel++;
+                if (parent.parentNode.tagName === 'LI') {
+                    parent = parent.parentNode.parentNode;
+                } else {
+                    parent = parent.parentNode;
+                }
             }
+            let indent = '\t'.repeat(indentLevel - 1);
+            let listMarker = '*';
+            if (node.parentNode.tagName === 'OL') {
+                let originalNumber = getListItemPosition(node);
+                if (!originalNumber) {
+                    // If not found, calculate position from parent
+                    const listItems = Array.from(node.parentNode.children);
+                    originalNumber = listItems.indexOf(node) + 1;
+                }
+                listMarker = originalNumber + '.';
+            }
+            return indent + listMarker + ' ' + content.trim() + '\n';
         },
     });
     var turndownPluginGfm = require('turndown-plugin-gfm');
     var gfm = turndownPluginGfm.gfm;
     turndownService.use(gfm);
     return turndownService.turndown(htmlContent).replaceAll(newLineChar, '');
+}
+
+/**
+ * Get position index from a list item
+ * @param {EasyMDE} li List item DOM element
+ */
+function getListItemPosition(li) {
+    let parentOl = li.parentElement;
+    if (!parentOl || parentOl.tagName !== 'OL') return null;
+    let start = parentOl.hasAttribute('start') ? parseInt(parentOl.getAttribute('start')) : 1;
+    let index = Array.from(parentOl.children).indexOf(li) + start;
+    return index;
 }
 
 /**
