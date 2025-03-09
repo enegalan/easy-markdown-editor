@@ -1117,7 +1117,12 @@ function parseHTML(htmlContent, editor) {
     var turndownPluginGfm = require('turndown-plugin-gfm');
     var gfm = turndownPluginGfm.gfm;
     turndownService.use(gfm);
-    return turndownService.turndown(htmlContent).replaceAll(newLineChar, '').replaceAll(/~(.*?)~/g, '~~$1~~');
+    var markdown = turndownService.turndown(htmlContent);
+    markdown = markdown.replaceAll(newLineChar, ''); // New lines hack
+    markdown = markdown.replaceAll(/~(.*?)~/g, '~~$1~~'); // ~something~ to ~~something~~ 
+    markdown = markdown.replace(new RegExp(`([^\n])\\n{2,}(${blockStyles.code}[\\s\\S]+?${blockStyles.code})`, 'g'), '$1\n$2'); // Remove first empty line previous codeblock in case there is any text
+    markdown = markdown.replace(new RegExp(`\\n+(${blockStyles.code}\\w*\\n[\\s\\S]+?${blockStyles.code})`, 'g'),'\n$1'); // Remove empty lines between consecutive codeblocks
+    return markdown;
 }
 
 /**
