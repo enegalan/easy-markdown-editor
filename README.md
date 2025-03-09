@@ -8,6 +8,9 @@
 [SimpleMDE, made by Sparksuite](https://github.com/sparksuite/simplemde-markdown-editor/).
 Go to the [dedicated section](#simplemde-fork) for more information.
 
+> [!NOTE]
+> EasyMDE converts markdown to HTML for preview feature, this fork implements the reverse, converting from HTML to Markdown. This can be useful to be able to save the text in a single format and to have both the HTML and Markdown versions.
+
 A drop-in JavaScript text area replacement for writing beautiful and understandable Markdown.
 EasyMDE allows users who may be less experienced with Markdown to use familiar toolbar buttons and shortcuts.
 
@@ -109,6 +112,9 @@ easyMDE.value('New input for **EasyMDE**');
 
 
 ## Configuration
+
+> [!IMPORTANT]
+> For HTML to markdown conversion to be 1:1 markdown style settings should be set to default, although it is not necessary because visually in the preview you still see the same result despite the text changing its format in this conversion.
 
 ### Options list
 
@@ -519,6 +525,7 @@ easyMDE.isPreviewActive(); // returns boolean
 easyMDE.isSideBySideActive(); // returns boolean
 easyMDE.isFullscreenActive(); // returns boolean
 easyMDE.clearAutosavedValue(); // no returned value
+easyMDE.getHtml() // returns HTML string
 ```
 
 
