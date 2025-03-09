@@ -1084,7 +1084,7 @@ function parseHTML(htmlContent, editor) {
     turndownService.addRule('horizontalRule', {
         filter: 'hr',
         replacement: function() {
-            return horizontalRule.replaceAll(/\n/g, newLineChar + '\n');
+            return '\n' + horizontalRule.replaceAll(/\n/g, newLineChar + '\n');
         },
     });
     turndownService.addRule('no-space-list', {
