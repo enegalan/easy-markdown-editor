@@ -1123,7 +1123,7 @@ function parseHTML(htmlContent, editor) {
     markdown = markdown.replace(new RegExp(`([^\n])\\n{2,}(${blockStyles.code}[\\s\\S]+?${blockStyles.code})`, 'g'), '$1\n$2'); // Remove blank lines before a code block if there is text before
     markdown = markdown.replace(new RegExp(`\\n+(${blockStyles.code}\\w*\\n[\\s\\S]+?${blockStyles.code})`, 'g'), '\n$1'); // Remove empty lines between consecutive code blocks
     markdown = markdown.replace(new RegExp(`(${blockStyles.code}[\\s\\S]+?${blockStyles.code})\\n{2,}([^\n])`, 'g'), '$1\n$2'); // Remove extra line break between last code block and subsequent text
-    markdown = markdown.replace(/([^\w\s*])\*/g, '\\*'); // Remove asterisks escaping \* to *
+    markdown = markdown.replace(/\\\*/g, '*'); // Remove any escaping from asterisks if they are in Markdown contexts
     return markdown;
 }
 
