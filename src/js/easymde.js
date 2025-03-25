@@ -1111,7 +1111,20 @@ function parseHTML(htmlContent, editor) {
                 }
                 listMarker = originalNumber + '.';
             }
-            return indent + listMarker + ' ' + content.trim() + '\n';
+            // Add newline if last item in list (in case there is more content after the list)
+            const isLastItem = node === node.parentNode.lastElementChild && node.tagName === 'LI';
+            const isLastContent = !node.parentNode.parentNode.nextElementSibling;
+            const newline = isLastItem && !isLastContent ? '\n' + newLineChar : '\n';
+            return indent + listMarker + ' ' + content.trim() + newline;
+        },
+    });
+    turndownService.addRule('newline-lists', {
+        filter: 'p', // WTF? Why are lists with more indented items wrapped in <p> tags?
+        replacement: function(content, node) {
+            if (node.parentNode.tagName === 'LI' && (node.parentNode.parentNode.tagName === 'UL' || node.parentNode.parentNode.tagName === 'OL')) {
+                return content + '\n';
+            }
+            return content + '\n\n';
         },
     });
     var turndownPluginGfm = require('turndown-plugin-gfm');
