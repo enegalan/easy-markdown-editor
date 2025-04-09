@@ -1076,8 +1076,19 @@ function parseHTML(htmlContent, editor) {
     });
     turndownService.addRule('no-space-after-br', {
         filter: 'br',
-        replacement: function() {
-            return '\n';
+        // eslint-disable-next-line no-unused-vars
+        replacement: function(content, node) {
+            if (!node.nextSibling) {
+                return '\n\n';
+            }
+            if (node.nextSibling && node.nextSibling.nodeName === 'BR') {
+                if ((node.nextSibling.nextSibling && (node.nextSibling.nextSibling.nodeName === 'UL' || node.nextSibling.nextSibling.nodeName === 'OL'))) {
+                    return '\n';
+                } else {
+                    return '\n\n';
+                }
+            }
+            return '\n' + newLineChar;
         },
     });
     const newLineChar = '&#10;';
@@ -1100,7 +1111,8 @@ function parseHTML(htmlContent, editor) {
                     parent = parent.parentNode;
                 }
             }
-            let indent = '\t'.repeat(indentLevel - 1);
+            let repeteadLevel = indentLevel - 1 > 0 ? indentLevel - 1 : 0;
+            let indent = '\t'.repeat(repeteadLevel);
             let listMarker = '*';
             if (node.parentNode.tagName === 'OL') {
                 let originalNumber = getListItemPosition(node);
@@ -1127,18 +1139,53 @@ function parseHTML(htmlContent, editor) {
             return content + '\n\n';
         },
     });
+    turndownService.addRule('newline-div', {
+        filter: 'div',
+        replacement: function(content, node) {
+            // If there is any content previously
+            if (node.querySelector('ul') || node.querySelector('ol')) {
+                return content + '\n';
+            } else if (node.querySelector('br')) {
+                return content + newLineChar;
+            } else if (node.previousSibling) {
+                return '\n' + newLineChar + content + newLineChar + newLineChar + '\n';
+            }
+            return content + newLineChar + newLineChar + '\n';
+        },
+    });
+    turndownService.addRule('breaks-in-bold', {
+        filter: ['strong', 'b'],
+        replacement: function(content, node, options) {
+            if (!content.trim()) return '';
+            let newContent;
+            if (node.querySelector('br')) {
+                node.removeChild(node.querySelector('br'));
+                content = content.replaceAll('\n', '');
+                content = options.strongDelimiter + content + options.strongDelimiter;
+                newContent = content + '\n';
+            } else {
+                newContent = options.strongDelimiter + content + options.strongDelimiter;
+            }
+            return newContent;
+        },
+    });
     var turndownPluginGfm = require('turndown-plugin-gfm');
     var gfm = turndownPluginGfm.gfm;
     turndownService.use(gfm);
-    var markdown = turndownService.turndown(htmlContent);
+    // HTML <br> is a blank line, but in markdown is just a newline
+    let sanitizedHtml = htmlContent.replace(/&nbsp;/g, ' ').replace(/\u200B/g, ' '); // Replace non-breaking spaces and zero-width spaces;
+    var markdown = turndownService.turndown(sanitizedHtml);
     markdown = markdown.replaceAll(newLineChar, ''); // New lines hack
     markdown = markdown.replaceAll(/~(.*?)~/g, '~~$1~~'); // from ~something~ to ~~something~~ 
     markdown = markdown.replace(new RegExp(`([^\n])\\n{2,}(${blockStyles.code}[\\s\\S]+?${blockStyles.code})`, 'g'), '$1\n$2'); // Remove blank lines before a code block if there is text before
     markdown = markdown.replace(new RegExp(`\\n+(${blockStyles.code}\\w*\\n[\\s\\S]+?${blockStyles.code})`, 'g'), '\n$1'); // Remove empty lines between consecutive code blocks
     markdown = markdown.replace(new RegExp(`(${blockStyles.code}[\\s\\S]+?${blockStyles.code})\\n{2,}([^\n])`, 'g'), '$1\n$2'); // Remove extra line break between last code block and subsequent text
     markdown = markdown.replace(/\\\*/g, '*'); // Remove any escaping from asterisks if they are in Markdown contexts
+    markdown = markdown.replace(/\\-/g, '-'); // Remove any escaping from dashes if they are in Markdown contexts
     markdown = markdown.replace(/(\|.*\|(\n\|.*\|)*)/g, '\n$1\n'); // Replace tables by adding line breaks at the beginning and end (Only works with default insertTexts.table value)
     markdown = markdown.replace(/\| --- \| --- \| --- \|/, '| -------- | -------- | -------- |'); // tables row from --- to --------
+    markdown = markdown.replace(/•/g, '*'); // Replace bullet points
+    markdown = markdown.replace(/(\n{2,})/g, '\n\n'); // Normalize multiple newlines into one
     return markdown;
 }
 
@@ -2525,8 +2572,11 @@ EasyMDE.prototype.render = function (el) {
     }.bind(temp_cm), 0);
 
     // Initial convertion from HTML to markdown
-    if ((!('initialHtmlParse' in options) && this.toolbarElements.html || options.initialHtmlParse === true) && containsHTML(this.codemirror.getValue())) {
-        this.codemirror.setValue(parseHTML(this.codemirror.getValue(), this));
+    let value = this.codemirror.getValue() != '' ? this.codemirror.getValue() : options.initialValue;
+    if (((!('initialHtmlParse' in options) && (this.toolbarElements && 'html' in this.toolbarElements && this.toolbarElements.html)) || options.initialHtmlParse === true) && containsHTML(value)) {
+        setTimeout(() => {
+            this.codemirror.setValue(parseHTML(value, this));
+        }, 1);
     }
 };
 
