@@ -1247,9 +1247,11 @@ function toggleSideBySide(editor) {
     if (previewNormal.classList.contains('editor-preview-active')) {
         previewNormal.classList.remove('editor-preview-active');
         var toolbar = editor.toolbarElements.preview;
-        var toolbar_div = editor.toolbar_div;
-        toolbar.classList.remove('active');
-        toolbar_div.classList.remove('disabled-for-preview');
+        if (toolbar) {
+            var toolbar_div = editor.toolbar_div;
+            toolbar.classList.remove('active');
+            toolbar_div.classList.remove('disabled-for-preview');
+        }
     }
 
     var sideBySideRenderingFunction = function () {
