@@ -405,3 +405,15 @@ span[data-img-src]::after {
     width: var(--width);
     background-repeat: no-repeat;
 }
+
+ins {
+    background: #d4edda;
+    color: #155724;
+    text-decoration: none;
+}
+
+del {
+    background-color: #f8d7da;
+    color: #721c24;
+    text-decoration: none;
+}

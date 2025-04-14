@@ -14,7 +14,7 @@ require('codemirror/mode/xml/xml.js');
 var CodeMirrorSpellChecker = require('codemirror-spell-checker');
 var marked = require('marked').marked;
 var TurndownService = require('turndown');
-
+const htmldiff = require('./htmldiff');
 
 // Some variables
 var isMac = /Mac/.test(navigator.platform);
@@ -1334,6 +1334,10 @@ function togglePreview(editor) {
     }
 
     var preview_result = editor.options.previewRender(editor.value(), preview);
+    if ('diffPreviousValue' in editor.options) {
+        var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
+        preview_result = htmldiff(previous_preview_result, preview_result);
+    }
     if (preview_result !== null) {
         preview.innerHTML = preview_result;
     }
