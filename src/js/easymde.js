@@ -1001,6 +1001,27 @@ function getHtml(editor) {
 }
 
 /**
+ * Toggle HTML diff action.
+ * @param {EasyMDE} editor
+ */
+function toggleDiff(editor) {
+    if (!('diffPreviousValue' in editor.options)) {
+        console.error('EasyMDE: diffPreviousValue option is not set.');
+        return;
+    }
+    if (!editor.isPreviewActive()) togglePreview(editor);
+    var cm = editor.codemirror;
+    var wrapper = cm.getWrapperElement();
+    var preview = wrapper.nextSibling;
+    cm.setOption('diff', !cm.getOption('diff'));
+    if (cm.getOption('diff')) {
+        var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
+        return htmldiff(previous_preview_result, editor.options.previewRender(editor.value(), preview));
+    }
+    return;
+}
+
+/**
  * Check if text contains HTML tags
  * @param {String} text
  */
@@ -3191,6 +3212,7 @@ EasyMDE.toggleSideBySide = toggleSideBySide;
 EasyMDE.toggleFullScreen = toggleFullScreen;
 EasyMDE.toggleHtml = toggleHtml;
 EasyMDE.getHtml = getHtml;
+EasyMDE.toggleDiff = toggleDiff;
 
 /**
  * Bind instance methods for exports.
@@ -3278,6 +3300,9 @@ EasyMDE.prototype.toggleHtml = function () {
 };
 EasyMDE.prototype.getHtml = function () {
     return getHtml(this);
+};
+EasyMDE.prototype.toggleDiff = function () {
+    return toggleDiff(this);
 };
 
 EasyMDE.prototype.isPreviewActive = function () {

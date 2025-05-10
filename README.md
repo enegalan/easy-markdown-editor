@@ -135,6 +135,7 @@ easyMDE.value('New input for **EasyMDE**');
   - **italic**: Can be set to `*` or `_`. Defaults to `*`.
 - **unorderedListStyle**: can be `*`, `-` or `+`. Defaults to `*`.
 - **initialHtmlParse**: If set to `true` when editor instanciates will convert HTML text to markdown. This option will be set to `true` if `html` button is on toolbar, otherwise it will be `false` by default.
+- **diffPreviousValue**: Set a previous markdown value and display its differences from the text within the `textarea` or the `initialValue` option when `togglePreview`.
 - **scrollbarStyle**: Chooses a scrollbar implementation. The default is "native", showing native scrollbars. The core library also provides the "null" style, which completely hides the scrollbars. Addons can implement additional scrollbar models.
 - **element**: The DOM element for the `textarea` element to use. Defaults to the first `textarea` element on the page.
 - **forceSync**: If set to `true`, force text changes made in EasyMDE to be immediately stored in original text area. Defaults to `false`.
@@ -529,6 +530,7 @@ easyMDE.isSideBySideActive(); // returns boolean
 easyMDE.isFullscreenActive(); // returns boolean
 easyMDE.clearAutosavedValue(); // no returned value
 easyMDE.getHtml() // returns HTML string
+easyMDE.toggleDiff() // returns an HTML string of the differences between the editor value and the value of the diffPreviousValue option.
 ```
 
 

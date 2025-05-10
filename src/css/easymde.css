@@ -406,13 +406,13 @@ span[data-img-src]::after {
     background-repeat: no-repeat;
 }
 
-ins {
+ins.diff-tag {
     background: #d4edda;
     color: #155724;
     text-decoration: none;
 }
 
-del {
+del.diff-tag {
     background-color: #f8d7da;
     color: #721c24;
     text-decoration: none;
