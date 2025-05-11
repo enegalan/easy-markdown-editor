@@ -133,9 +133,7 @@
 }
 
 .editor-preview table td,
-.editor-toolbar .easymde-dropdown-content button,
-.editor-toolbar .easymde-dropdown
-.editor-toolbar button {
+.editor-toolbar .easymde-dropdown-content button {
     background: transparent;
 }
 
@@ -542,6 +540,11 @@ del.diff-tag {
     .editor-toolbar {
         border-top: 1px solid #333;
         border-right: 1px solid #333;
+    }
+    .editor-toolbar button,
+    .editor-toolbar .easymde-dropdown {
+        background: transparent;
+        color: #e8eaed;
     }
     .editor-toolbar button.active {
         color: #00bfff;
