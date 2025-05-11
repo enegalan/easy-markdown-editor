@@ -1916,7 +1916,6 @@ var toolbarBuiltInButtons = {
         name: 'html',
         action: toggleHtml,
         className: iconClassMap['html'],
-        noDisable: true,
         title: 'Source Edit',
     },
     'preview': {
