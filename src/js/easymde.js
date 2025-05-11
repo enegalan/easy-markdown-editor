@@ -1012,13 +1012,19 @@ function toggleDiff(editor) {
     if (!editor.isPreviewActive()) togglePreview(editor);
     var cm = editor.codemirror;
     var wrapper = cm.getWrapperElement();
-    var preview = wrapper.nextSibling;
-    cm.setOption('diff', !cm.getOption('diff'));
+    var preview = wrapper.lastChild;
+    var result;
+    var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
     if (cm.getOption('diff')) {
-        var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
-        return htmldiff(previous_preview_result, editor.options.previewRender(editor.value(), preview));
+        var diff = htmldiff(previous_preview_result, editor.options.previewRender(editor.value(), preview));
+        preview.innerHTML = diff;
+        result = diff;
+    } else {
+        preview.innerHTML = previous_preview_result;
+        result = previous_preview_result;
     }
-    return;
+    cm.setOption('diff', !cm.getOption('diff'));
+    return result;
 }
 
 /**
@@ -1358,6 +1364,7 @@ function togglePreview(editor) {
 
     var preview_result = editor.options.previewRender(editor.value(), preview);
     if ('diffPreviousValue' in editor.options) {
+        cm.getOption('diff', true);
         var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
         preview_result = htmldiff(previous_preview_result, preview_result);
     }
