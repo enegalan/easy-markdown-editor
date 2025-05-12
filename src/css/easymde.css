@@ -133,7 +133,8 @@
 }
 
 .editor-preview table td,
-.editor-toolbar .easymde-dropdown-content button {
+.editor-toolbar .easymde-dropdown-content button,
+.editor-toolbar button {
     background: transparent;
 }
 
