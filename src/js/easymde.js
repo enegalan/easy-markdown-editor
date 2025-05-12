@@ -1029,7 +1029,7 @@ function toggleDiff(editor) {
     var wrapper = cm.getWrapperElement();
     var preview = wrapper.lastChild;
     var result;
-    const editingMode = wrapper.classList.contains('CodeMirror-sided') || !editor.toolbar_div.classList.contains('disabled-for-preview');
+    const editingMode = wrapper.classList.contains('CodeMirror-sided') || (editor.toolbar_div && !editor.toolbar_div.classList.contains('disabled-for-preview'));
     var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
     var diffButton = editor.toolbarElements && editor.toolbarElements.diff;
     if (diffButton) {
