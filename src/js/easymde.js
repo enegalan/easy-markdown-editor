@@ -1255,6 +1255,17 @@ function parseHTML(htmlContent, editor) {
     return markdown;
 }
 
+function formatLastUpdate(date) {
+    const pad = num => num.toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    return `${year}/${month}/${day} - ${hours}:${minutes}:${seconds}`;
+}
+
 /**
  * Get position index from a list item
  * @param {EasyMDE} li List item DOM element
@@ -2234,6 +2245,23 @@ function EasyMDE(options) {
     // Update this options
     this.options = options;
 
+    // Handle lastUpdateDate option
+    if (options.status && options.lastUpdateDate !== undefined && options.lastUpdateDate !== null) {
+        let dateObj = options.lastUpdateDate;
+        if (typeof dateObj === 'string') {
+            dateObj = new Date(dateObj);
+        }
+        if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+            console.warn('EasyMDE: lastUpdateDate must be a valid Date or date string.');
+            options.lastUpdateDate = null;
+        } else {
+            options.lastUpdateDate = dateObj;
+            // Ensure 'last-update' is at start
+            if (!options.status.includes('last-update')) {
+                options.status.unshift('last-update');
+            }
+        }
+    }
 
     // Auto render
     this.render();
@@ -3116,7 +3144,6 @@ EasyMDE.prototype.createStatusbar = function (status) {
             });
         } else {
             var name = status[i];
-
             if (name === 'words') {
                 defaultValue = function (el) {
                     el.innerHTML = wordCount(cm.getValue());
@@ -3151,6 +3178,13 @@ EasyMDE.prototype.createStatusbar = function (status) {
                 defaultValue = function (el) {
                     el.innerHTML = options.imageTexts.sbInit;
                 };
+            } else if (name === 'last-update') {
+                defaultValue = function (el) {
+                    var date = this.options.lastUpdateDate;
+                    if (date instanceof Date && !isNaN(date.getTime())) {
+                        el.innerHTML = 'updated: ' + formatLastUpdate(date);
+                    }
+                }.bind(this);
             }
 
             items.push({

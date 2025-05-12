@@ -233,10 +233,16 @@
 }
 
 .editor-statusbar {
+    position: relative;
     padding: 8px 10px;
     font-size: 12px;
     color: #959694;
     text-align: right;
+}
+
+.last-update {
+    position: absolute;
+    left: 0;
 }
 
 .EasyMDEContainer.sided--no-fullscreen .editor-statusbar {
