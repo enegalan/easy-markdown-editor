@@ -18,10 +18,17 @@
     border: 1px solid #ced4da;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
     padding: 10px;
     font: inherit;
     z-index: 0;
     word-wrap: break-word;
+}
+
+.EasyMDEContainer .editor-toolbar ~ .CodeMirror{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .EasyMDEContainer .CodeMirror-scroll {
