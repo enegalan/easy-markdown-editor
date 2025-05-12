@@ -48,6 +48,7 @@ var bindings = {
     'toggleSideBySide': toggleSideBySide,
     'toggleFullScreen': toggleFullScreen,
     'html': toggleHtml,
+    'diff': toggleDiffAction,
 };
 
 var shortcuts = {
@@ -225,6 +226,10 @@ function createToolbarButton(options, enableActions, enableTooltips, shortcuts, 
 
     if (options.noDisable) {
         el.classList.add('no-disable');
+    }
+
+    if (options.diff) {
+        el.classList.add('diff-btn');
     }
 
     if (options.noMobile) {
@@ -967,7 +972,18 @@ function toggleHtml(editor) {
     cm.setValue(value);
     toggleToolbarFormatOrStylingButtons(editor);
     htmlButton.classList.toggle('active');
+    if ('diffPreviousValue' in editor.options) {
+        toggleDiff(editor);
+    }
     return htmlContent;
+}
+
+/**
+ * Toggle diff action.
+ * @param {EasyMDE} editor
+ */
+function toggleDiffAction(editor) {
+    toggleDiff(editor);
 }
 
 /**
@@ -1009,21 +1025,45 @@ function toggleDiff(editor) {
         console.error('EasyMDE: diffPreviousValue option is not set.');
         return;
     }
-    if (!editor.isPreviewActive()) togglePreview(editor);
     var cm = editor.codemirror;
     var wrapper = cm.getWrapperElement();
     var preview = wrapper.lastChild;
     var result;
+    const editingMode = wrapper.classList.contains('CodeMirror-sided') || !editor.toolbar_div.classList.contains('disabled-for-preview');
     var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
-    if (cm.getOption('diff')) {
-        var diff = htmldiff(previous_preview_result, editor.options.previewRender(editor.value(), preview));
-        preview.innerHTML = diff;
-        result = diff;
-    } else {
-        preview.innerHTML = previous_preview_result;
-        result = previous_preview_result;
+    var diffButton = editor.toolbarElements && editor.toolbarElements.diff;
+    if (diffButton) {
+        if (editingMode && editor._diffPrevState === undefined) {
+            editor._diffPrevState = {
+                active: diffButton.classList.contains('active'),
+                disabled: diffButton.disabled,
+            };
+        }
+        if (editingMode) diffButton.disabled = true;
+        else {
+            if (editor._diffPrevState) {
+                if (editor._diffPrevState.active) diffButton.classList.add('active');
+                else diffButton.classList.remove('active');
+                diffButton.disabled = editor._diffPrevState.disabled;
+                editor._diffPrevState = undefined;
+            } else {
+                if (cm.getOption('diff', true)) diffButton.classList.add('active');
+                else diffButton.classList.remove('active');
+                diffButton.disabled = false;
+            }
+        }
     }
-    cm.setOption('diff', !cm.getOption('diff'));
+    if (!editingMode) {
+        if (cm.getOption('diff', true)) {
+            var diff = htmldiff(previous_preview_result, editor.options.previewRender(editor.value(), preview));
+            preview.innerHTML = diff;
+            result = diff;
+        } else {
+            preview.innerHTML = previous_preview_result;
+            result = previous_preview_result;
+        }
+        cm.setOption('diff', !cm.getOption('diff'));
+    }
     return result;
 }
 
@@ -1086,7 +1126,6 @@ function parseHTML(htmlContent, editor) {
             options[formattingOptionsReferMap[key]] = editor.options[key];
         }
     });
-    // TODO: DOC
     if (editor.turndownOptions && typeof editor.turndownOptions === 'object') {
         options = Object.assign(options, editor.turndownOptions);
     }
@@ -1304,6 +1343,10 @@ function toggleSideBySide(editor) {
 
     // Refresh to fix selection being off (#309)
     cm.refresh();
+
+    if ('diffPreviousValue' in editor.options) {
+        toggleDiff(editor, true, true);
+    }
 }
 
 
@@ -1361,12 +1404,10 @@ function togglePreview(editor) {
             toolbar_div.classList.add('disabled-for-preview');
         }
     }
-
     var preview_result = editor.options.previewRender(editor.value(), preview);
     if ('diffPreviousValue' in editor.options) {
-        cm.getOption('diff', true);
-        var previous_preview_result = editor.options.previewRender(editor.options.diffPreviousValue, preview);
-        preview_result = htmldiff(previous_preview_result, preview_result);
+        toggleDiff(editor, true, true);
+        return;
     }
     if (preview_result !== null) {
         preview.innerHTML = preview_result;
@@ -1778,6 +1819,7 @@ var iconClassMap = {
     'undo': 'fa fa-undo',
     'redo': 'fa fa-repeat fa-redo',
     'html': 'fa fa-html5',
+    'diff': 'fa fa-exchange',
 };
 
 var toolbarBuiltInButtons = {
@@ -1925,6 +1967,13 @@ var toolbarBuiltInButtons = {
         noDisable: true,
         title: 'Toggle Preview',
         default: true,
+    },
+    'diff': {
+        name: 'diff',
+        action: toggleDiffAction,
+        className: iconClassMap['diff'],
+        title: 'Toggle Diff',
+        diff: true,
     },
     'side-by-side': {
         name: 'side-by-side',
@@ -2611,6 +2660,8 @@ EasyMDE.prototype.render = function (el) {
             this.codemirror.setValue(parseHTML(value, this));
         }, 1);
     }
+    // Set default options
+    if ('diffPreviousValue' in options) this.codemirror.setOption('diff', true);
 };
 
 EasyMDE.prototype.cleanup = function () {
@@ -3015,13 +3066,13 @@ EasyMDE.prototype.createToolbar = function (items) {
     var cm = this.codemirror;
     cm.on('cursorActivity', function () {
         var stat = getState(cm);
-
+        const whitelist = ['fullscreen', 'side-by-side', 'html', 'diff'];
         for (var key in toolbarData) {
             (function (key) {
                 var el = toolbarData[key];
                 if (stat[key]) {
                     el.classList.add('active');
-                } else if (key != 'fullscreen' && key != 'side-by-side' && key != 'html') {
+                } else if (!whitelist.includes(key)) {
                     el.classList.remove('active');
                 }
             })(key);

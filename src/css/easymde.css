@@ -220,7 +220,8 @@
     content: "▼";
 }
 
-.editor-toolbar.disabled-for-preview button:not(.no-disable) {
+.editor-toolbar.disabled-for-preview button:not(.no-disable):not(.diff-btn),
+.editor-toolbar button[disabled].diff-btn {
     opacity: .6;
     pointer-events: none;
 }
@@ -551,7 +552,7 @@ del.diff-tag {
         color: #00bfff;
         background: #222e3c;
     }
-    .editor-toolbar button[disabled], .editor-toolbar .easymde-dropdown-content button[disabled] {
+    .editor-toolbar button[disabled]:not(.diff-btn), .editor-toolbar .easymde-dropdown-content button[disabled] {
         color: #555;
     }
     .editor-toolbar button:not([disabled]):active {
@@ -614,7 +615,7 @@ del.diff-tag {
     .editor-preview-active-side {
         background: #23272a;
     }
-    .editor-toolbar.disabled-for-preview button:not(.no-disable) {
+    .editor-toolbar.disabled-for-preview button:not(.no-disable):not(.diff-btn) {
         opacity: .4;
     }
     .EasyMDEContainer a:visited {
