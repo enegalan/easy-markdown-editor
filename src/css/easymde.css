@@ -298,6 +298,7 @@
     box-sizing: border-box;
     border: 1px solid #ddd;
     word-wrap: break-word;
+    border-bottom-right-radius: 12px;
 }
 
 .editor-preview-active-side {

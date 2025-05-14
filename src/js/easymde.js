@@ -972,7 +972,7 @@ function toggleHtml(editor) {
     cm.setValue(value);
     toggleToolbarFormatOrStylingButtons(editor);
     htmlButton.classList.toggle('active');
-    if ('diffPreviousValue' in editor.options) {
+    if ('diffPreviousValue' in editor.options && !('initialDiff' in editor.options)) {
         toggleDiff(editor);
     }
     return htmlContent;
@@ -1020,7 +1020,7 @@ function getHtml(editor) {
  * Toggle HTML diff action.
  * @param {EasyMDE} editor
  */
-function toggleDiff(editor) {
+function toggleDiff(editor, onlyActivate = false) {
     if (!('diffPreviousValue' in editor.options)) {
         console.error('EasyMDE: diffPreviousValue option is not set.');
         return;
@@ -1053,8 +1053,8 @@ function toggleDiff(editor) {
             }
         }
     }
-    if (!editingMode) {
-        if (cm.getOption('diff', true)) {
+    if (!editingMode || onlyActivate) {
+        if (cm.getOption('diff', true) || onlyActivate) {
             var diff = htmldiff(previous_preview_result, editor.options.previewRender(editor.value(), preview));
             preview.innerHTML = diff;
             result = diff;
@@ -1062,9 +1062,17 @@ function toggleDiff(editor) {
             preview.innerHTML = previous_preview_result;
             result = previous_preview_result;
         }
-        cm.setOption('diff', !cm.getOption('diff'));
+        if (!onlyActivate) cm.setOption('diff', !cm.getOption('diff'));
     }
     return result;
+}
+
+/**
+ * Activate HTML diff action.
+ * @param {EasyMDE} editor
+ */
+function activateDiff(editor) {
+    toggleDiff(editor, true);
 }
 
 /**
@@ -1356,7 +1364,7 @@ function toggleSideBySide(editor) {
     cm.refresh();
 
     if ('diffPreviousValue' in editor.options) {
-        toggleDiff(editor, true, true);
+        toggleDiff(editor);
     }
 }
 
@@ -1416,8 +1424,8 @@ function togglePreview(editor) {
         }
     }
     var preview_result = editor.options.previewRender(editor.value(), preview);
-    if ('diffPreviousValue' in editor.options) {
-        toggleDiff(editor, true, true);
+    if ('diffPreviousValue' in editor.options && !('initialDiff' in editor.options)) {
+        toggleDiff(editor);
         return;
     }
     if (preview_result !== null) {
@@ -3304,6 +3312,7 @@ EasyMDE.toggleFullScreen = toggleFullScreen;
 EasyMDE.toggleHtml = toggleHtml;
 EasyMDE.getHtml = getHtml;
 EasyMDE.toggleDiff = toggleDiff;
+EasyMDE.activateDiff = activateDiff;
 
 /**
  * Bind instance methods for exports.
@@ -3395,6 +3404,9 @@ EasyMDE.prototype.getHtml = function () {
 EasyMDE.prototype.toggleDiff = function () {
     return toggleDiff(this);
 };
+EasyMDE.prototype.activateDiff = function () {
+    return activateDiff(this);
+};
 
 EasyMDE.prototype.isPreviewActive = function () {
     var cm = this.codemirror;
@@ -3402,6 +3414,11 @@ EasyMDE.prototype.isPreviewActive = function () {
     var preview = wrapper.lastChild;
 
     return preview.classList.contains('editor-preview-active');
+};
+
+EasyMDE.prototype.isDiffActive = function () {
+    var cm = this.codemirror;
+    return !cm.getOption('diff');
 };
 
 EasyMDE.prototype.isSideBySideActive = function () {
