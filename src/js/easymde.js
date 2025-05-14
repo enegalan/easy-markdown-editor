@@ -2689,7 +2689,7 @@ EasyMDE.prototype.render = function (el) {
         }, 1);
     }
     // Set default options
-    if ('diffPreviousValue' in options) this.codemirror.setOption('diff', true);
+    this.codemirror.setOption('diff', true);
 };
 
 EasyMDE.prototype.cleanup = function () {
