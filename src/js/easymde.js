@@ -1077,6 +1077,20 @@ function activateDiff(editor) {
     toggleDiff(editor, true);
 }
 
+function getLastUpdateDisplay(date) {
+    if (date instanceof Date && !isNaN(date.getTime())) {
+        return 'updated: ' + formatLastUpdate(date);
+    } else {
+        return '';
+    }
+}
+
+function updateLastUpdate(editor) {
+    var date = editor.options.lastUpdateDate;
+    var el = editor.gui.statusbar.querySelector('.last-update');
+    el.innerHTML = getLastUpdateDisplay(date);
+}
+
 /**
  * Check if text contains HTML tags
  * @param {String} text
@@ -3188,13 +3202,6 @@ EasyMDE.prototype.createStatusbar = function (status) {
                 defaultValue = function (el) {
                     el.innerHTML = options.imageTexts.sbInit;
                 };
-            } else if (name === 'last-update') {
-                defaultValue = function (el) {
-                    var date = this.options.lastUpdateDate;
-                    if (date instanceof Date && !isNaN(date.getTime())) {
-                        el.innerHTML = 'updated: ' + formatLastUpdate(date);
-                    }
-                }.bind(this);
             }
 
             items.push({
@@ -3205,6 +3212,16 @@ EasyMDE.prototype.createStatusbar = function (status) {
             });
         }
     }
+
+    items.push({
+        className: 'last-update',
+        defaultValue: function (el) {
+            var date = this.options.lastUpdateDate;
+            el.innerHTML = getLastUpdateDisplay(date);
+        }.bind(this),
+        onUpdate: undefined,
+        onActivity: undefined,
+    });
 
 
     // Create element for the status bar
@@ -3315,7 +3332,7 @@ EasyMDE.toggleHtml = toggleHtml;
 EasyMDE.getHtml = getHtml;
 EasyMDE.toggleDiff = toggleDiff;
 EasyMDE.activateDiff = activateDiff;
-
+EasyMDE.updateLastUpdate = updateLastUpdate;
 /**
  * Bind instance methods for exports.
  */
@@ -3408,6 +3425,9 @@ EasyMDE.prototype.toggleDiff = function () {
 };
 EasyMDE.prototype.activateDiff = function () {
     return activateDiff(this);
+};
+EasyMDE.prototype.updateLastUpdate = function () {
+    return updateLastUpdate(this);
 };
 
 EasyMDE.prototype.isPreviewActive = function () {
