@@ -1024,6 +1024,8 @@ function toggleDiff(editor, onlyActivate = false) {
     if (!('diffPreviousValue' in editor.options)) {
         console.error('EasyMDE: diffPreviousValue option is not set.');
         return;
+    } else if (!editor.options.diffPreviousValue) {
+        return;
     }
     var cm = editor.codemirror;
     var wrapper = cm.getWrapperElement();
