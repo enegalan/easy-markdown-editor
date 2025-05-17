@@ -972,7 +972,7 @@ function toggleHtml(editor) {
     cm.setValue(value);
     toggleToolbarFormatOrStylingButtons(editor);
     htmlButton.classList.toggle('active');
-    if ('diffPreviousValue' in editor.options && !('initialDiff' in editor.options)) {
+    if ('diffPreviousValue' in editor.options) {
         toggleDiff(editor);
     }
     return htmlContent;
@@ -1080,9 +1080,8 @@ function activateDiff(editor) {
 function getLastUpdateDisplay(date) {
     if (date instanceof Date && !isNaN(date.getTime())) {
         return 'updated: ' + formatLastUpdate(date);
-    } else {
-        return '';
     }
+    return '';
 }
 
 function updateLastUpdate(editor) {
