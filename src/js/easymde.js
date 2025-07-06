@@ -1392,7 +1392,7 @@ function togglePreview(editor) {
     var cm = editor.codemirror;
     var wrapper = cm.getWrapperElement();
     var toolbar_div = editor.toolbar_div;
-    var toolbar = editor.options.toolbar ? editor.toolbarElements.preview : false;
+    var toolbar = editor.options.toolbar && editor.toolbarElements ? editor.toolbarElements.preview : false;
     var preview = wrapper.lastChild;
 
     // Turn off side by side if needed
