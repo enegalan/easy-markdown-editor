@@ -2713,6 +2713,16 @@ EasyMDE.prototype.render = function (el) {
     }
     // Set default options
     this.codemirror.setOption('diff', true);
+    if (!('darkmode' in options)) {
+        // System preference
+        easyMDEContainer.classList.add('darkmode-auto');
+    } else if (options.darkmode == true) {
+        // Force darkmode
+        easyMDEContainer.classList.add('darkmode');
+    } else {
+        // Force lightmode
+        easyMDEContainer.classList.add('lightmode');
+    }
 };
 
 EasyMDE.prototype.cleanup = function () {

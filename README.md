@@ -135,8 +135,10 @@ easyMDE.value('New input for **EasyMDE**');
   - **italic**: Can be set to `*` or `_`. Defaults to `*`.
 - **unorderedListStyle**: can be `*`, `-` or `+`. Defaults to `*`.
 - **initialHtmlParse**: If set to `true` when editor instanciates will convert HTML text to markdown. This option will be set to `true` if `html` button is on toolbar, otherwise it will be `false` by default.
-- **diffPreviousValue**: Set a previous markdown value and display its differences from the text within the `textarea` or the `initialValue` option when `togglePreview`.
-- **lastUpdateDate**: Set date (Date object or text) for display it on status bar.
+- **diffPreviousValue**: If set, enables a diff mode that visually compares the current editor content with the provided previous Markdown value.
+- **diff**: If set to `true`, the editor will start in diff mode, showing the differences between the current value and `diffPreviousValue`. You can also set this option dynamically to enable or disable diff mode programmatically.
+When `diff` is `true`, the diff view is shown by default. You can toggle it later via the diff button or by updating the option.
+- **lastUpdateDate**: Set date (Date object or text) for display it on status bar. If provided, a "Last update" item will appear in the status bar, showing the formatted date.
 - **scrollbarStyle**: Chooses a scrollbar implementation. The default is "native", showing native scrollbars. The core library also provides the "null" style, which completely hides the scrollbars. Addons can implement additional scrollbar models.
 - **element**: The DOM element for the `textarea` element to use. Defaults to the first `textarea` element on the page.
 - **forceSync**: If set to `true`, force text changes made in EasyMDE to be immediately stored in original text area. Defaults to `false`.
@@ -218,6 +220,7 @@ easyMDE.value('New input for **EasyMDE**');
 - **toolbarTips**: If set to `false`, disable toolbar button tips. Defaults to `true`.
 - **toolbarButtonClassPrefix**: Adds a prefix to the toolbar button classes when set. For example, a value of `"mde"` results in `"mde-bold"` for the Bold button.
 - **direction**: `rtl` or `ltr`. Changes text direction to support right-to-left languages. Defaults to `ltr`.
+- **darkmode**: Controls the editor's color scheme. If set to `true`, forces dark mode. If set to `false`, forces light mode. If omitted, the editor will follow the system color scheme preference (auto).
 
 
 ### Options example

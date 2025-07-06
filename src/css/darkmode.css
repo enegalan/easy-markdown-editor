@@ -1,0 +1,263 @@
+@media (prefers-color-scheme: dark) {
+    .EasyMDEContainer.darkmode-auto .CodeMirror-focused .CodeMirror-selected {
+        background: rgb(53 167 242 / 30%) !important;
+    }
+    .darkmode-auto .editor-toolbar,
+    .darkmode-auto .editor-toolbar.fullscreen,
+    .darkmode-auto .editor-toolbar .easymde-dropdown,
+    .darkmode-auto .editor-preview,
+    .darkmode-auto .editor-preview-full,
+    .darkmode-auto .editor-preview-side,
+    .darkmode-auto .CodeMirror,
+    .darkmode-auto .CodeMirror-rtl pre {
+        background: #252627 !important;
+        border-color: #333 !important;
+    }
+    .darkmode-auto .editor-toolbar,
+    .darkmode-auto .editor-toolbar.fullscreen,
+    .darkmode-auto .editor-preview,
+    .darkmode-auto .editor-preview-full,
+    .darkmode-auto .editor-preview-side,
+    .darkmode-auto .CodeMirror,
+    .darkmode-auto .CodeMirror-rtl pre
+    .darkmode-auto .editor-toolbar .easymde-dropdown-content button,
+    .darkmode-auto .editor-toolbar .easymde-dropdown-content
+    .darkmode-auto .editor-toolbar button,
+    .darkmode-auto .editor-toolbar .easymde-dropdown,
+    .darkmode-auto .editor-preview pre,
+    .darkmode-auto .editor-preview table td,
+    .darkmode-auto .editor-preview table th,
+    .darkmode-auto .editor-preview-active,
+    .darkmode-auto .editor-preview-active-side {
+        color: #e8eaed !important;
+    }
+    .EasyMDEContainer.darkmode-auto {
+        scrollbar-color: #333 #23272a;
+    }
+    .darkmode-auto .editor-toolbar i.separator, .editor-toolbar {
+        border-left: 1px solid #333;
+    }
+    .darkmode-auto .editor-toolbar {
+        border-top: 1px solid #333;
+        border-right: 1px solid #333;
+    }
+    .darkmode-auto .editor-toolbar button,
+    .darkmode-auto .editor-toolbar .easymde-dropdown {
+        background: transparent;
+        color: #e8eaed;
+    }
+    .darkmode-auto .editor-toolbar button.active {
+        color: #00bfff;
+        background: #222e3c;
+    }
+    .darkmode-auto .editor-toolbar button[disabled]:not(.diff-btn),
+    .darkmode-auto .editor-toolbar .easymde-dropdown-content button[disabled] {
+        color: #555;
+    }
+    .darkmode-auto .editor-toolbar button:not([disabled]):active {
+        background: rgb(218 217 217 / 10%);
+    }
+    .darkmode-auto .editor-toolbar button.active:not([disabled]):hover {
+        background: rgb(117 204 254 / 20%);
+    }
+    .darkmode-auto .editor-toolbar button.active:not([disabled]):active {
+        background: rgb(107 201 255 / 30%);
+    }
+    .darkmode-auto .editor-toolbar i.separator {
+        border-right: 1px solid #23272a;
+    }
+    .darkmode-auto .editor-preview,
+    .darkmode-auto .editor-preview-full,
+    .darkmode-auto .editor-preview-side,
+    .darkmode-auto .editor-toolbar .easymde-dropdown {
+        border: 1px solid #333;
+    }
+    .darkmode-auto .editor-preview pre {
+        background: #1c1c1c;
+    }
+    .darkmode-auto .editor-preview table th {
+        background: #2d2e2f;
+    }
+    .darkmode-auto .editor-preview table td,
+    .darkmode-auto .editor-preview table th {
+        border: 1px solid #575b5f;
+    }
+    .darkmode-auto .cm-s-easymde .cm-tag {
+        color: #8ec07c;
+    }
+    .darkmode-auto .cm-s-easymde .cm-attribute {
+        color: #b8a1e3;
+    }
+    .darkmode-auto .cm-s-easymde .cm-string {
+        color: #b5cea8;
+    }
+    .darkmode-auto .cm-s-easymde .cm-url, .cm-s-easymde .cm-image-marker {
+        color: #7ecfff;
+    }
+    .darkmode-auto .cm-s-easymde .cm-quote {
+        color: #b8b8b8;
+    }
+    .darkmode-auto .cm-s-easymde .cm-comment {
+        background: rgba(255,255,255,0.05);
+        color: #888;
+    }
+    .darkmode-auto .editor-toolbar .easymde-dropdown-content {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.7);
+    }
+    .darkmode-auto .editor-toolbar .easymde-dropdown-content button:hover,
+    .darkmode-auto .editor-toolbar.fullscreen {
+        background: #181a1b;
+    }
+    .darkmode-auto .editor-toolbar .easymde-dropdown-content,
+    .darkmode-auto .editor-toolbar .easymde-dropdown-content button:active,
+    .darkmode-auto .editor-preview-active,
+    .darkmode-auto .editor-preview-active-side {
+        background: #23272a;
+    }
+    .darkmode-auto .editor-toolbar.disabled-for-preview button:not(.no-disable):not(.diff-btn) {
+        opacity: .4;
+    }
+    .EasyMDEContainer.darkmode-auto a:visited {
+        color: #ffadff;
+    }
+    .darkmode-auto .editor-preview blockquote::before {
+        background: hsl(210,5%,36%);
+    }
+    .darkmode-auto .editor-preview hr {
+        color: #575b60;
+    }
+    .darkmode-auto .CodeMirror-cursor {
+        border-color: #e8eaed;
+    }
+}
+
+.EasyMDEContainer.darkmode .CodeMirror-focused .CodeMirror-selected {
+    background: rgb(53 167 242 / 30%) !important;
+}
+.darkmode .editor-toolbar,
+.darkmode .editor-toolbar.fullscreen,
+.darkmode .editor-toolbar .easymde-dropdown,
+.darkmode .editor-preview,
+.darkmode .editor-preview-full,
+.darkmode .editor-preview-side,
+.darkmode .CodeMirror,
+.darkmode .CodeMirror-rtl pre {
+    background: #252627 !important;
+    border-color: #333 !important;
+}
+.darkmode .editor-toolbar,
+.darkmode .editor-toolbar.fullscreen,
+.darkmode .editor-preview,
+.darkmode .editor-preview-full,
+.darkmode .editor-preview-side,
+.darkmode .CodeMirror,
+.darkmode .CodeMirror-rtl pre
+.darkmode .editor-toolbar .easymde-dropdown-content button,
+.darkmode .editor-toolbar .easymde-dropdown-content
+.darkmode .editor-toolbar button,
+.darkmode .editor-toolbar .easymde-dropdown,
+.darkmode .editor-preview pre,
+.darkmode .editor-preview table td,
+.darkmode .editor-preview table th,
+.darkmode .editor-preview-active,
+.darkmode .editor-preview-active-side {
+    color: #e8eaed !important;
+}
+.EasyMDEContainer.darkmode {
+    scrollbar-color: #333 #23272a;
+}
+.darkmode .editor-toolbar i.separator, .editor-toolbar {
+    border-left: 1px solid #333;
+}
+.darkmode .editor-toolbar {
+    border-top: 1px solid #333;
+    border-right: 1px solid #333;
+}
+.darkmode .editor-toolbar button,
+.darkmode .editor-toolbar .easymde-dropdown {
+    background: transparent;
+    color: #e8eaed;
+}
+.darkmode .editor-toolbar button.active {
+    color: #00bfff;
+    background: #222e3c;
+}
+.darkmode .editor-toolbar button[disabled]:not(.diff-btn),
+.darkmode .editor-toolbar .easymde-dropdown-content button[disabled] {
+    color: #555;
+}
+.darkmode .editor-toolbar button:not([disabled]):active {
+    background: rgb(218 217 217 / 10%);
+}
+.darkmode .editor-toolbar button.active:not([disabled]):hover {
+    background: rgb(117 204 254 / 20%);
+}
+.darkmode .editor-toolbar button.active:not([disabled]):active {
+    background: rgb(107 201 255 / 30%);
+}
+.darkmode .editor-toolbar i.separator {
+    border-right: 1px solid #23272a;
+}
+.darkmode .editor-preview,
+.darkmode .editor-preview-full,
+.darkmode .editor-preview-side,
+.darkmode .editor-toolbar .easymde-dropdown {
+    border: 1px solid #333;
+}
+.darkmode .editor-preview pre {
+    background: #1c1c1c;
+}
+.darkmode .editor-preview table th {
+    background: #2d2e2f;
+}
+.darkmode .editor-preview table td,
+.darkmode .editor-preview table th {
+    border: 1px solid #575b5f;
+}
+.darkmode .cm-s-easymde .cm-tag {
+    color: #8ec07c;
+}
+.darkmode .cm-s-easymde .cm-attribute {
+    color: #b8a1e3;
+}
+.darkmode .cm-s-easymde .cm-string {
+    color: #b5cea8;
+}
+.darkmode .cm-s-easymde .cm-url, .cm-s-easymde .cm-image-marker {
+    color: #7ecfff;
+}
+.darkmode .cm-s-easymde .cm-quote {
+    color: #b8b8b8;
+}
+.darkmode .cm-s-easymde .cm-comment {
+    background: rgba(255,255,255,0.05);
+    color: #888;
+}
+.darkmode .editor-toolbar .easymde-dropdown-content {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.7);
+}
+.darkmode .editor-toolbar .easymde-dropdown-content button:hover,
+.darkmode .editor-toolbar.fullscreen {
+    background: #181a1b;
+}
+.darkmode .editor-toolbar .easymde-dropdown-content,
+.darkmode .editor-toolbar .easymde-dropdown-content button:active,
+.darkmode .editor-preview-active,
+.darkmode .editor-preview-active-side {
+    background: #23272a;
+}
+.darkmode .editor-toolbar.disabled-for-preview button:not(.no-disable):not(.diff-btn) {
+    opacity: .4;
+}
+.EasyMDEContainer.darkmode a:visited {
+    color: #ffadff;
+}
+.darkmode .editor-preview blockquote::before {
+    background: hsl(210,5%,36%);
+}
+.darkmode .editor-preview hr {
+    color: #575b60;
+}
+.darkmode .CodeMirror-cursor {
+    border-color: #e8eaed;
+}
