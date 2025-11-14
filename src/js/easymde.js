@@ -3290,7 +3290,7 @@ EasyMDE.prototype.createStatusbar = function (status) {
  */
 EasyMDE.prototype.value = function (val) {
     var cm = this.codemirror;
-    if (val === undefined) {
+    if (val === undefined || val === null) {
         return cm.getValue();
     } else {
         cm.getDoc().setValue(val);
